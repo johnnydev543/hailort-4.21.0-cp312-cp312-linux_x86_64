@@ -1,0 +1,1 @@
+# hailort-4.21.0-cp312-cp3120-linux_x86_64
