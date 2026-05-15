@@ -11,7 +11,7 @@
 在開始編譯前，請先確保系統已安裝基礎編譯工具、Linux 核心標頭檔以及 Python 打包相關套件。
 
 
-```
+```bash
 # 更新系統軟體包
 sudo apt update
 sudo apt install -y build-essential cmake git wget dkms linux-headers-$(uname -r)
@@ -34,7 +34,7 @@ pip install pybind11 mako wheel setuptools
 
 ```bash
 # 1. 複製驅動專案並切換至 v4.21.0 標籤
-git clone --depth 1 --branch v4.21.0 [https://github.com/hailo-ai/hailort-drivers.git](https://github.com/hailo-ai/hailort-drivers.git)
+git clone --depth 1 --branch v4.21.0 https://github.com/hailo-ai/hailort-drivers.git
 cd hailort-drivers/linux/pcie
 
 # 2. 編譯並安裝驅動核心模組
@@ -58,7 +58,7 @@ lsmod | grep hailo_pci
 ```bash
 # 1. 回到家目錄並複製主專案原始碼 (v4.21.0 標籤)
 cd ~
-git clone --depth 1 --branch v4.21.0 [https://github.com/hailo-ai/hailort.git](https://github.com/hailo-ai/hailort.git)
+git clone --depth 1 --branch v4.21.0 https://github.com/hailo-ai/hailort.git
 cd hailort
 
 # 2. 一鍵修正 external/ 目錄下所有外部套件的 CMake 最低版本要求為 3.5
@@ -103,7 +103,7 @@ pip install dist/hailort-4.21.0-cp312-cp312-linux_x86_64.whl
 ```bash
 # 1. 回到家目錄，從官方開源發行管道下載 4.21.0 正確版韌體
 cd ~
-wget [https://github.com/hailo-ai/hailort/raw/v4.21.0/hailort/hailortcli/firmware/hailo8_fw.bin](https://github.com/hailo-ai/hailort/raw/v4.21.0/hailort/hailortcli/firmware/hailo8_fw.bin)
+wget https://github.com/hailo-ai/hailort/raw/v4.21.0/hailort/hailortcli/firmware/hailo8_fw.bin
 
 # 2. 使用新編譯好的工具更新韌體 (路徑通常在 build/hailort/hailortcli/ 下，或直接使用系統工具)
 ~/hailort/build/hailort/hailortcli/hailortcli fw-update hailo8_fw.bin
