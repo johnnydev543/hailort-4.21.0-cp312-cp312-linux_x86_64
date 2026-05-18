@@ -31,7 +31,7 @@ RUN useradd -m -s /bin/bash $HAILO_USERNAME
 WORKDIR /home/$HAILO_USERNAME
 
 # Copy local wheel file if it exists, otherwise download from URL
-COPY hailort-4.21.0-cp312-cp312-linux_x86_64.whl* ./hailort-4.21.0-cp312-cp312-linux_x86_64.whl 2>/dev/null || true
+COPY hailort-4.21.0-cp312-cp312-linux_x86_64.whl* ./
 RUN if [ -f "hailort-4.21.0-cp312-cp312-linux_x86_64.whl" ]; then \
         echo "Using local wheel file"; \
     else \
