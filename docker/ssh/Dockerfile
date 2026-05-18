@@ -5,6 +5,7 @@ FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
 ENV HAILO_USERNAME=hailo
 ENV HAILO_PASSWORD=hailo
+ENV HAILO_WHEEL_URL=https://github.com/johnnydev543/hailort-4.21.0-cp312-cp312-linux_x86_64/raw/main/hailort-4.21.0-cp312-cp312-linux_x86_64.whl
 
 # Install required packages including SSH server and Python 3.12 dependencies
 RUN apt-get update && apt-get install -y \
@@ -41,9 +42,9 @@ RUN mkdir /var/run/sshd && \
 # Set working directory
 WORKDIR /home/$HAILO_USERNAME
 
-# Copy and install HailoRT wheel from local file
-COPY hailort-4.21.0-cp312-cp312-linux_x86_64.whl .
-RUN python3.12 -m pip install hailort-4.21.0-cp312-cp312-linux_x86_64.whl
+# Download and install HailoRT wheel
+RUN curl -L -o hailort-4.21.0-cp312-cp312-linux_x86_64.whl $HAILO_WHEEL_URL && \
+    python3.12 -m pip install hailort-4.21.0-cp312-cp312-linux_x86_64.whl
 
 # Install additional packages for Whisper/FastAPI testing
 RUN python3.12 -m pip install \
