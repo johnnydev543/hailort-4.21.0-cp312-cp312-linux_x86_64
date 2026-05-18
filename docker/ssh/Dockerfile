@@ -24,8 +24,8 @@ RUN apt-get update && apt-get install -y \
         python3.12 \
         python3.12-venv \
         python3.12-dev \
-        python3.12-distutils \
         python3-pip \
+    && python3.12 -m pip install --upgrade pip \
     && rm -rf /var/lib/apt/lists/*
 
 # Create hailo user with password and give sudo access
@@ -45,7 +45,6 @@ WORKDIR /home/$HAILO_USERNAME
 
 # Download and install HailoRT wheel
 RUN curl -L -o hailort-4.21.0-cp312-cp312-linux_x86_64.whl $HAILO_WHEEL_URL && \
-    python3.12 -m pip install --upgrade pip && \
     python3.12 -m pip install hailort-4.21.0-cp312-cp312-linux_x86_64.whl
 
 # Install additional packages for Whisper/FastAPI testing
