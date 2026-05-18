@@ -5,7 +5,7 @@ FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
 ENV HAILO_USERNAME=hailo
 ENV HAILO_PASSWORD=hailo
-ENV HAILO_WHEEL_URL=https://github.com/johnnydev543/hailort-4.21.0-cp312-cp312-linux_x86_64/raw/main/hailort-4.21.0-cp312-cp312-linux_x86_64.whl
+ENV HAILO_WHEEL_URL=
 
 # Install required packages including SSH server and Python 3.12 dependencies
 RUN apt-get update && apt-get install -y \
@@ -42,8 +42,19 @@ RUN mkdir /var/run/sshd && \
 # Set working directory
 WORKDIR /home/$HAILO_USERNAME
 
-# Download and install HailoRT wheel
-RUN curl -L -o hailort-4.21.0-cp312-cp312-linux_x86_64.whl $HAILO_WHEEL_URL && \
+# Copy local wheel file if it exists, otherwise download from URL
+COPY hailort-4.21.0-cp312-cp312-linux_x86_64.whl* ./hailort-4.21.0-cp312-cp312-linux_x86_64.whl 2>/dev/null || true
+RUN if [ -f "hailort-4.21.0-cp312-cp312-linux_x86_64.whl" ]; then \
+        echo "Using local wheel file"; \
+    else \
+        if [ -n "$HAILO_WHEEL_URL" ]; then \
+            echo "Downloading wheel from $HAILO_WHEEL_URL"; \
+            curl -L -o hailort-4.21.0-cp312-cp312-linux_x86_64.whl $HAILO_WHEEL_URL; \
+        else \
+            echo "Error: No local wheel file found and HAILO_WHEEL_URL not set"; \
+            exit 1; \
+        fi; \
+    fi && \
     python3.12 -m pip install hailort-4.21.0-cp312-cp312-linux_x86_64.whl
 
 # Install additional packages for Whisper/FastAPI testing
