@@ -39,11 +39,15 @@ RUN mkdir /var/run/sshd && \
     sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config && \
     sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config
 
+# Generate ssh host key
+RUN ssh-keygen -A
+RUN mkdir -p /var/run/sshd
+
 # Set working directory
 WORKDIR /home/$HAILO_USERNAME
 
 # Copy local wheel file if it exists, otherwise download from URL
-COPY hailort-4.21.0-cp312-cp312-linux_x86_64.whl* ./ || true
+COPY hailort-4.21.0-cp312-cp312-linux_x86_64.whl* ./
 RUN if [ -f "hailort-4.21.0-cp312-cp312-linux_x86_64.whl" ]; then \
         echo "Using local wheel file"; \
     else \
