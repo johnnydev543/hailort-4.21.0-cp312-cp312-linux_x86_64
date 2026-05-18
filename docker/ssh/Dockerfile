@@ -43,6 +43,9 @@ RUN mkdir /var/run/sshd && \
 RUN ssh-keygen -A
 RUN mkdir -p /var/run/sshd
 
+# Ensure host keys are generated at runtime if they don't exist
+RUN echo '#!/bin/bash\nif [ ! -f /etc/ssh/ssh_host_rsa_key ]; then\n  ssh-keygen -A\nfi\n/usr/sbin/sshd -D' > /start-sshd.sh && chmod +x /start-sshd.sh
+
 # Set working directory
 WORKDIR /home/$HAILO_USERNAME
 
@@ -78,7 +81,7 @@ RUN rm hailort-4.21.0-cp312-cp312-linux_x86_64.whl
 EXPOSE 22
 
 # Switch to hailo user
-USER $HAILO_USERNAME
+# USER $HAILO_USERNAME
 
 # Set default command to start SSH server
-CMD ["/usr/sbin/sshd", "-D"]
+CMD ["/start-sshd.sh"]
