@@ -7,19 +7,24 @@ ENV HAILO_USERNAME=hailo
 ENV HAILO_PASSWORD=hailo
 ENV HAILO_WHEEL_URL=https://github.com/johnnydev543/hailort-4.21.0-cp312-cp312-linux_x86_64/raw/main/hailort-4.21.0-cp312-cp312-linux_x86_64.whl
 
-# Install required packages including SSH server
+# Install required packages including SSH server and Python 3.12 dependencies
 RUN apt-get update && apt-get install -y \
-    python3.12 \
-    python3.12-venv \
-    python3-pip \
-    ffmpeg \
-    git \
-    curl \
+    software-properties-common \
     wget \
+    curl \
+    git \
+    ffmpeg \
     build-essential \
     cmake \
     openssh-server \
     sudo \
+    && add-apt-repository -y ppa:deadsnakes/ppa \
+    && apt-get update \
+    && apt-get install -y \
+        python3.12 \
+        python3.12-venv \
+        python3.12-dev \
+        python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
 # Create hailo user with password and give sudo access
