@@ -4,11 +4,10 @@ FROM ubuntu:24.04
 # Environment variables
 ENV DEBIAN_FRONTEND=noninteractive
 ENV USERNAME=root
-ENV PASSWORD=root
+ENV PASSWORD=***
 
-# Install required packages including SSH server and Python 3.12 dependencies
+# Install required packages including SSH server and Python (24.04 ships Python 3.12)
 RUN apt-get update && apt-get install -y \
-    software-properties-common \
     wget \
     curl \
     git \
@@ -16,14 +15,10 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
     openssh-server \
-    sudo \
-    && add-apt-repository -y ppa:deadsnakes/ppa \
-    && apt-get update \
-    && apt-get install -y \
-        python3.12 \
-        python3.12-venv \
-        python3.12-dev \
-    && curl -sS https://bootstrap.pypa.io/get-pip.py | python3.12 \
+    python3 \
+    python3-venv \
+    python3-dev \
+    python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
 # Set up SSH server
@@ -45,9 +40,6 @@ RUN chmod +x /start-sshd.sh
 
 # Set working directory
 WORKDIR /root
-
-# Copy requirements file
-COPY requirements.txt ./
 
 # Expose SSH port
 EXPOSE 22
