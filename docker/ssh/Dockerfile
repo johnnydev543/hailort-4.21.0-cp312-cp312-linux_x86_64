@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV USERNAME=root
 ENV PASSWORD=***
 
-# Install required packages including SSH server and Python (24.04 ships Python 3.12)
+# Install required packages including SSH server, Python, and build dependencies for HailoRT
 RUN apt-get update && apt-get install -y \
     wget \
     curl \
@@ -20,6 +20,12 @@ RUN apt-get update && apt-get install -y \
     python3-dev \
     python3-pip \
     && rm -rf /var/lib/apt/lists/*
+
+# Install HailoRT runtime library (v4.21.0 deb package)
+RUN curl -L -o /tmp/hailort_4.21.0_amd64.deb https://github.com/johnnydev543/frigate-hailo/raw/refs/heads/main/hailort_4.21.0_amd64.deb && \
+    dpkg -i /tmp/hailort_4.21.0_amd64.deb && \
+    ldconfig && \
+    rm /tmp/hailort_4.21.0_amd64.deb
 
 # Set up SSH server
 RUN mkdir /var/run/sshd && \
