@@ -35,7 +35,7 @@ RUN mkdir -p /var/run/sshd
 RUN echo "root:root" | chpasswd
 
 # Ensure host keys are generated at runtime if they don't exist
-COPY start-sshd.sh /start-sshd.sh
+COPY docker/ssh/start-sshd.sh /start-sshd.sh
 RUN chmod +x /start-sshd.sh
 
 # Set working directory
