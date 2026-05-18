@@ -11,14 +11,13 @@ if [ ! -d /root/venv ]; then
   echo "Venv created. Activate with: source /root/venv/bin/activate"
 fi
 
-echo ""
-echo "========================================="
-echo "  Hailo SSH Environment Ready"
-echo "========================================="
-echo "  Python venv : /root/venv"
-echo "  Activate    : source /root/venv/bin/activate"
-echo "========================================="
-echo ""
+cat > /etc/profile.d/hailo-welcome.sh << 'EOF'
+if [ -d /root/venv ]; then
+  echo ""
+  echo "  venv at /root/venv — source /root/venv/bin/activate"
+  echo ""
+fi
+EOF
 
 # Start SSH daemon in foreground
 exec /usr/sbin/sshd -D
