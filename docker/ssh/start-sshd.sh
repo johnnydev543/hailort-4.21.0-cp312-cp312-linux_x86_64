@@ -19,5 +19,13 @@ if [ -d /root/venv ]; then
 fi
 EOF
 
+# Auto-detect Hailo PCIe devices
+for dev in /sys/bus/pci/devices/*/driver; do
+  if readlink "$dev" 2>/dev/null | grep -q hailo; then
+    HAILO_PCI=$(echo "$dev" | cut -d/ -f6)
+    echo "Hailo PCIe device detected: $HAILO_PCI"
+  fi
+done || echo "Warning: No Hailo PCIe device detected"
+
 # Start SSH daemon in foreground
 exec /usr/sbin/sshd -D
