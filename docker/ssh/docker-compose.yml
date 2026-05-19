@@ -1,0 +1,15 @@
+services:
+  hailo-env:
+    image: hailo-env:ssh
+    container_name: hailo_env_ssh
+    restart: unless-stopped
+    shm_size: "512mb"
+    privileged: true
+    devices:
+      - /dev/hailo0:/dev/hailo0
+    volumes:
+      - /var/run/hailo:/var/run/hailo
+      - /etc/localtime:/etc/localtime:ro
+      - ./volumes/root:/root
+    ports:
+      - "8222:22"
