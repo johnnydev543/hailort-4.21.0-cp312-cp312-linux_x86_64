@@ -11,8 +11,7 @@ if [ "$SSH_ENABLED" = "true" ]; then
   if [ ! -f /etc/ssh/ssh_host_rsa_key ]; then
     ssh-keygen -A
   fi
-  echo "SSH server is enabled. Starting sshd..."
-  /usr/sbin/sshd
+  echo "SSH server is enabled."
 else
   echo "SSH server is not installed. Skipping sshd startup."
 fi
