@@ -1,7 +1,20 @@
 #!/bin/bash
-# Generate host keys at runtime if missing
-if [ ! -f /etc/ssh/ssh_host_rsa_key ]; then
-  ssh-keygen -A
+
+SSH_ENABLED=false
+if command -v sshd &>/dev/null; then
+  SSH_ENABLED=true
+fi
+
+# Start SSH daemon if installed
+if [ "$SSH_ENABLED" = "true" ]; then
+  # Generate host keys at runtime if missing
+  if [ ! -f /etc/ssh/ssh_host_rsa_key ]; then
+    ssh-keygen -A
+  fi
+  echo "SSH server is enabled. Starting sshd..."
+  /usr/sbin/sshd
+else
+  echo "SSH server is not installed. Skipping sshd startup."
 fi
 
 # Create Python venv if it doesn't exist
@@ -27,5 +40,11 @@ for dev in /sys/bus/pci/devices/*/driver; do
   fi
 done || echo "Warning: No Hailo PCIe device detected"
 
-# Start SSH daemon in foreground
-exec /usr/sbin/sshd -D
+# Keep container running: if SSH is enabled, keep foreground with sshd;
+# otherwise, keep alive with a sleep infinity
+if [ "$SSH_ENABLED" = "true" ]; then
+  exec /usr/sbin/sshd -D
+else
+  echo "No SSH daemon. Keeping container alive with sleep infinity..."
+  exec sleep infinity
+fi

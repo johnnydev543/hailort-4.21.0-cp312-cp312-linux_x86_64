@@ -1,7 +1,12 @@
 services:
   hailo-env:
-    image: hailo-env:ssh
-    container_name: hailo_env_ssh
+    build:
+      context: ../../
+      dockerfile: docker/ssh/Dockerfile
+      args:
+        ENABLE_SSH: "true"
+    image: hailo-env:local
+    container_name: hailo_env
     restart: unless-stopped
     shm_size: "512mb"
     privileged: true
@@ -13,3 +18,4 @@ services:
       - ./volumes/root:/root
     ports:
       - "8222:22"
+      - "8000:8000"

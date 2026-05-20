@@ -1,12 +1,16 @@
-# Dockerfile for Hailo test environment (SSH version)
+# Dockerfile for Hailo test environment
+# Build arg: ENABLE_SSH=true to include SSH server functionality (default: true)
 FROM ubuntu:24.04
+
+# Build argument to enable/disable SSH
+ARG ENABLE_SSH=true
 
 # Environment variables
 ENV DEBIAN_FRONTEND=noninteractive
 ENV USERNAME=root
 ENV PASSWORD=***
 
-# Install required packages including SSH server, Python, and build dependencies for HailoRT
+# Install required packages: Python, build dependencies for HailoRT, and conditionally SSH
 RUN apt-get update && apt-get install -y \
     wget \
     curl \
@@ -14,11 +18,11 @@ RUN apt-get update && apt-get install -y \
     ffmpeg \
     build-essential \
     cmake \
-    openssh-server \
     python3 \
     python3-venv \
     python3-dev \
     python3-pip \
+    $(if [ "$ENABLE_SSH" = "true" ]; then echo "openssh-server"; fi) \
     && rm -rf /var/lib/apt/lists/*
 
 # Install HailoRT runtime library (v4.21.0 deb package)
@@ -27,28 +31,26 @@ RUN curl -L -o /tmp/hailort_4.21.0_amd64.deb https://github.com/johnnydev543/fri
     ldconfig && \
     rm /tmp/hailort_4.21.0_amd64.deb
 
-# Set up SSH server
-RUN mkdir /var/run/sshd && \
+# Set up SSH server (only if ENABLE_SSH=true)
+RUN if [ "$ENABLE_SSH" = "true" ]; then \
+    mkdir /var/run/sshd && \
     sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
     sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
-    sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config
+    sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config && \
+    ssh-keygen -A && \
+    mkdir -p /var/run/sshd && \
+    echo "root:root" | chpasswd; \
+    fi
 
-# Generate ssh host key
-RUN ssh-keygen -A
-RUN mkdir -p /var/run/sshd
-
-# Set root password
-RUN echo "root:root" | chpasswd
-
-# Ensure host keys are generated at runtime if they don't exist
-COPY docker/ssh/start-sshd.sh /start-sshd.sh
-RUN chmod +x /start-sshd.sh
+# Copy entrypoint script
+COPY docker/ssh/start-service.sh /start-service.sh
+RUN chmod +x /start-service.sh
 
 # Set working directory
 WORKDIR /root
 
-# Expose SSH port
+# Expose SSH port (only meaningful when ENABLE_SSH=true)
 EXPOSE 22
 
-# Set default command to start SSH server
-CMD ["/start-sshd.sh"]
+# Set default command
+CMD ["/start-service.sh"]
