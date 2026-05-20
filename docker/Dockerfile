@@ -26,8 +26,10 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install HailoRT runtime library (v4.21.0 deb package)
+# Use --force-depends to skip dependency checks and || true to tolerate postinst errors
+# (postinst may fail because Hailo PCIe device is not available during build)
 RUN curl -L -o /tmp/hailort_4.21.0_amd64.deb https://github.com/johnnydev543/frigate-hailo/raw/refs/heads/main/hailort_4.21.0_amd64.deb && \
-    dpkg -i /tmp/hailort_4.21.0_amd64.deb && \
+    dpkg --force-depends -i /tmp/hailort_4.21.0_amd64.deb || true && \
     ldconfig && \
     rm /tmp/hailort_4.21.0_amd64.deb
 
