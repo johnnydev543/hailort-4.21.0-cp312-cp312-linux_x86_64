@@ -1,8 +1,8 @@
 services:
   hailo-env:
     build:
-      context: ../../
-      dockerfile: docker/ssh/Dockerfile
+      context: ..
+      dockerfile: docker/Dockerfile
       args:
         ENABLE_SSH: "true"
     image: hailo-env:local

@@ -43,7 +43,7 @@ RUN if [ "$ENABLE_SSH" = "true" ]; then \
     fi
 
 # Copy entrypoint script
-COPY docker/ssh/start-service.sh /start-service.sh
+COPY docker/start-service.sh /start-service.sh
 RUN chmod +x /start-service.sh
 
 # Set working directory

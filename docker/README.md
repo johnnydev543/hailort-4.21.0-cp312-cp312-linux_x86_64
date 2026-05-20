@@ -7,11 +7,10 @@
 ```
 docker/
 ├── README.md
-└── ssh/
-    ├── Dockerfile           # 主要映像檔建構定義
-    ├── docker-compose.yml   # Docker Compose 編排設定
-    ├── requirements.txt     # Python 依賴套件清單
-    └── start-service.sh     # 容器啟動入口腳本
+├── Dockerfile           # 主要映像檔建構定義
+├── docker-compose.yml   # Docker Compose 編排設定
+├── requirements.txt     # Python 依賴套件清單
+└── start-service.sh     # 容器啟動入口腳本
 ```
 
 ## 功能特色
@@ -26,20 +25,20 @@ docker/
 ### 啟用 SSH（預設）
 
 ```bash
-cd docker/ssh
+cd docker
 docker compose build
 ```
 
 或直接使用 `docker build`：
 
 ```bash
-docker build -t hailo-env:ssh ../../
+docker build -t hailo-env:local .
 ```
 
 ### 停用 SSH
 
 ```bash
-docker build --build-arg ENABLE_SSH=false -t hailo-env:nossh ../../
+docker build --build-arg ENABLE_SSH=false -t hailo-env:nossh .
 ```
 
 > 當 `ENABLE_SSH=false` 時，映像檔不會安裝 `openssh-server`，也不會設定 SSH 相關配置，容器會以 `sleep infinity` 保持運行。
@@ -47,7 +46,7 @@ docker build --build-arg ENABLE_SSH=false -t hailo-env:nossh ../../
 ## 啟動容器
 
 ```bash
-cd docker/ssh
+cd docker
 docker compose up -d
 ```
 
@@ -61,7 +60,7 @@ ssh root@localhost -p 8222
 ### 進入容器 Shell
 
 ```bash
-docker exec -it hailo_env_ssh bash
+docker exec -it hailo_env bash
 ```
 
 進入後啟用 Python venv：
@@ -76,7 +75,7 @@ source /root/venv/bin/activate
 
 ```bash
 source /root/venv/bin/activate
-pip install -r /path/to/requirements.txt
+pip install -r /path/to/docker/requirements.txt
 ```
 
 ## 環境變數與 Build Arguments
